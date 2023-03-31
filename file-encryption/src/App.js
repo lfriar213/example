@@ -1,22 +1,22 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useState } from 'react';
+import './App.css';
+import FileInput from './FileInput';
+import FileEncryptor from './FileEncryptor';
+import CryptoJS from 'crypto-js';
+import './styles.css';
+
 
 function App() {
+  const [file, setFile] = useState(null);
+  const [encryptedFile, setEncryptedFile] = useState(null);
+  const [encryptedFileName, setEncryptedFileName] = useState(null);
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <FileInput />
+        {file && <FileEncryptor file={file} />}
       </header>
     </div>
   );
