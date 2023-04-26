@@ -1,51 +1,57 @@
 import React, { useState } from 'react';
 import CryptoJS from 'crypto-js';
 
-function FileDecryptor({ file, secretKey }) {
-  console.log("Secret key:", secretKey);
-  const [decryptedFile, setDecryptedFile] = useState(null);
-  const [error, setError] = useState(null);
+function FileDecryptor({ file }) {
+  // Declare state variables using the useState hook
+  const [secretKey, setSecretKey] = useState('');
+  const [decryptedData, setDecryptedData] = useState(null);
+  const [decryptionError, setDecryptionError] = useState(null);
 
+  // Define an event handler for the secret key input field
+  const handleSecretKeyChange = (event) => {
+    setSecretKey(event.target.value);
+  };    
+
+  // Define an event handler for the Decrypt button
   const handleDecryptClick = () => {
     try {
-      const bytes = CryptoJS.AES.decrypt(file.data, CryptoJS.PBKDF2(secretKey, file.salt, { keySize: 256/32, iterations: 100 }));
-      const decryptedFile = bytes.toString(CryptoJS.enc.Utf8);
-      if (decryptedFile) {
-        setDecryptedFile(decryptedFile);
-        setError(null);
-        console.log("Decryption successful");
-      } else {
-        setError("Incorrect Key, Please Try Again");
-      }
+      // Use the CryptoJS library to decrypt the file with the provided secret key
+      const bytes = CryptoJS.AES.decrypt(file, secretKey);
+      const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+      // Update state to store the decrypted data and clear any previous error message
+      setDecryptedData(decryptedData);
+      setDecryptionError(null);
     } catch (error) {
-      setError("Incorrect Key, Please Try Again");
+      // If decryption fails, set an error message and clear any previously decrypted data
+      setDecryptionError('Incorrect key, please try again.');
+      setDecryptedData(null);
     }
   };
 
-  const handleDownloadDecryptedFileClick = () => {
-    const decryptedDataBlob = new Blob([decryptedFile], { type: file.type });
+  // Define an event handler for the Download Decrypted File button
+  const handleDownloadClick = () => {
+    // Create a new Blob object to represent the decrypted data
+    const decryptedBlob = new Blob([decryptedData], { type: file.type });
+    // Create a new download link element and simulate a click to download the decrypted data
     const downloadLink = document.createElement('a');
-    downloadLink.href = URL.createObjectURL(decryptedDataBlob);
-    downloadLink.download = file.fileName.replace('.enc', '');
+    downloadLink.href = URL.createObjectURL(decryptedBlob);
+    downloadLink.download = file.name.replace('.enc', ''); // Remove the .enc extension from the original filename
     downloadLink.click();
   };
 
+  // Render the decryption form with input fields, buttons, and error messages
   return (
-    <>
+    <div>
+      <input type="text" placeholder="Enter secret key" value={secretKey} onChange={handleSecretKeyChange} />
       <button onClick={handleDecryptClick}>Decrypt</button>
-      {decryptedFile && (
+      {decryptionError && <p>{decryptionError}</p>}
+      {decryptedData && (
         <div>
-          <h3>Decrypted file:</h3>
-          <p>{decryptedFile}</p>
-          <button onClick={handleDownloadDecryptedFileClick}>Download Decrypted File</button>
+          <p>Decryption successful.</p>
+          <button onClick={handleDownloadClick}>Download Decrypted File</button>
         </div>
       )}
-      {error && (
-        <div>
-          <p>{error}</p>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
 
