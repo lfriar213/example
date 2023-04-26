@@ -13,8 +13,8 @@
   
     &__background,
     &__background-triangles {
-      width: 1080px;
-      height: 1280px;
+      width: 1450px;
+      height: 1920px;
       background-repeat: no-repeat;
       background-size: contain;
       position: absolute;
@@ -29,12 +29,12 @@
     }
   
     &__content {
-      width: 1080px;
+      width: 1450px;
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 1;
-      margin-top: 100px;
+      margin-top: 50px;
   
       &__heading,
       &__cta {
@@ -60,7 +60,7 @@
       }
   
       &__cta {
-        background-color: #ff737e;
+        background-color: #c04608;
         width: 60%;
         padding: 40px;
   
